@@ -6,7 +6,7 @@ Please check the official laravel installation guide for server requirements bef
 ## Clone the repository
 
 ````
-git clone git@github.com
+git clone https://github.com/saravanacse96/mini-aspire.git
 ````
 
 ## Switch to the repo folder
