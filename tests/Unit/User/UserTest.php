@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
 
 class UserTest extends TestCase
 {
@@ -25,7 +26,7 @@ class UserTest extends TestCase
 
                 $name = 'sample_user';
                 $email = 'sample_user@gmail.com';
-                $password = 'sample_user';
+                $password = 'password';
                 $user_type = 'Admin';
                 $response = $this->postJson('/api/auth/register', [
                     'name' => $name,
@@ -34,41 +35,27 @@ class UserTest extends TestCase
                     'password_confirmation' => $password,
                     'user_type' => $user_type,
                 ]);
-                 // dd($response);
-
+                
             $response->assertStatus(200)->assertJson([
-             'created' => true,
+                 'created' => true,
             ]);
 
-            // $this->assertTrue($response['created']);
-
-            // $response = $this->postJson('/api/loan-approve',[
-            //     'loan_id' => 3,
-            //     'status' =>'APPROVED'
-            // ]);
-            // dd($response);
         }
 
         public function testLoginUser()
         {
-             $this->withoutExceptionHandling();
-                // $email = $this->faker->safeEmail;
-                // $password = $this->faker->password(8);
-                $response = $this->postJson('/api/auth/login', [
-                    'email' => 'sample_user@gmail.com',
-                    'password' => 'sample_user'
-                ]);
+            $this->withoutExceptionHandling();
 
-                $response->assertStatus(200)->assertJson([
-                    'created' => true,
-                ]);
-                $this->assertTrue($response['created']);
+            $user = User::factory()->create();
 
-            // $response = $this->postJson('/api/loan-approve',[
-            //     'loan_id' => 3,
-            //     'status' =>'APPROVED'
-            // ]);
-            // dd($response);
+            $response = $this->postJson('/api/auth/login', [
+            'email' =>  $user->email,
+            'password' => 'password'
+            ]);
+            $response->assertStatus(200)->assertJson([
+                'created' => true,
+            ]);
+            $this->assertTrue($response['created']);
         }
 
    

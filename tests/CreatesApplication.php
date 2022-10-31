@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Artisan;
 
 trait CreatesApplication
 {
@@ -17,6 +18,18 @@ trait CreatesApplication
 
         $app->make(Kernel::class)->bootstrap();
 
+        $this->cacheClear();
+
         return $app;
+
+
+    }
+    public function cacheClear(){
+
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('config:cache');
+        Artisan::call('view:clear');
+        Artisan::call('route:clear');
     }
 }

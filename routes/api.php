@@ -2,9 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\LoanController;
-use App\Http\Controllers\Api\admin\AdminController;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Loan\LoanController;
+use App\Http\Controllers\Api\Admin\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,22 +16,15 @@ use App\Http\Controllers\Api\admin\AdminController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::post('/auth/register', [AuthController::class, 'register']);
-
-Route::post('/auth/login', [AuthController::class, 'login']);
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
-Route::get('/loans1', [LoanController::class, 'index']);
-
+ /* Admin-Customer */
 Route::group(['middleware' => ['auth:sanctum']], function () {
-   /* Admin-Customer */
+  
     Route::get('/loans', [LoanController::class, 'index']);
-
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
 

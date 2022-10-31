@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Models\User;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -14,18 +15,24 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $attr = $request->validate([
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'user_type' => 'required|string'
         ]);
+
+        if($validator->fails()){
+            return $this->error('Validation Error.', $validator->errors(),401);       
+        }
         
         $user = User::create([
-            'name' => $attr['name'],
-            'password' => bcrypt($attr['password']),
-            'email' => $attr['email'],
-            'user_type' => $attr['user_type'],
+            'name' => $input['name'],
+            'password' => bcrypt($input['password']),
+            'email' => $input['email'],
+            'user_type' => $input['user_type'],
         ]);
 
         return $this->success([
@@ -35,15 +42,21 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $attr = $request->validate([
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
             'email' => 'required|string|email|',
             'password' => 'required|string|min:6'
         ]);
-        // dd(auth()->user());
-        if (!Auth::attempt($attr)) {
+
+         if($validator->fails()){
+            return $this->error('Validation Error.', $validator->errors(),401);       
+        }
+        
+        if (!Auth::attempt($input)) {
             return $this->error('Validation Error.','Credentials not match', 401);
         }
-        // dd('is here');
+
         return $this->success([
             'token' => auth()->user()->createToken('API Token')->plainTextToken
         ]);
@@ -53,8 +66,12 @@ class AuthController extends Controller
     {
         auth()->user()->tokens()->delete();
 
-        return [
-            'message' => 'Tokens Revoked'
-        ];
+        return $this->success(
+            [
+                'user' => [],
+            ],
+            'User Logout Successfully'
+        );
+        
     }
 }

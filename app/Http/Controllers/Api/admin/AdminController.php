@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\admin;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Loan;
-use App\Models\LoanRepayment;
+use App\ModelsLoanRepayment;
 use Auth;
 
 class AdminController extends Controller
@@ -16,6 +16,7 @@ class AdminController extends Controller
     use ApiResponser;
 
     public function approve(Request $request){
+        
         $input = $request->all();
 
         $validator = Validator::make($input, [
