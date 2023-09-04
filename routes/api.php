@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Admin\AdminController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//testing pushing code
 Route::group(['prefix' => 'auth'], function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
